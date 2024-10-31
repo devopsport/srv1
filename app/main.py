@@ -6,6 +6,9 @@ from boto3.dynamodb.conditions import Key
 import jwt
 import requests
 
+from fastapi.openapi.utils import get_openapi
+import json
+
 # Configuración de FastAPI y CORS
 app = FastAPI()
 app.add_middleware(
@@ -107,3 +110,19 @@ async def add_service(service: NewService):
         return service
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# Función para generar el archivo openapi.json
+def generate_openapi_json():
+    openapi_schema = get_openapi(
+        title="Mi API de Servicios",
+        version="1.0.0",
+        description="API para gestionar servicios en DynamoDB",
+        routes=app.routes,
+    )
+    with open("openapi.json", "w") as f:
+        json.dump(openapi_schema, f, indent=4)
+    print("Archivo openapi.json generado con éxito")
+
+# Ejecutar la generación del archivo cuando corras el script principal
+if __name__ == "__main__":
+    generate_openapi_json()

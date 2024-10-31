@@ -14,14 +14,5 @@ DOCKER_USER = $(shell whoami)
 base:
 	docker build -t ${project}-${env}-${service}:build -f Dockerfile .
 
-up:
-	@docker compose up
-
-down:
-	@docker compose down
-
-init:
-	cd terraform/ && terraform init -backend-config=config.remote.tfbackend
-
-apply:
-	cd terraform/ && terraform apply -var="project=${project}" -var="env=${env}" -var="service=${service}"
+run:
+	docker run -e AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${project}-${env}-${service}:build
